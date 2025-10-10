@@ -1,34 +1,34 @@
 package com.pluralsight;
 
 public class Transaction {
-    private String paymentDate;
-    private String paymentTime;
-    private String paymentDescription;
+    private String transactionDate;
+    private String transactionTime;
+    private String transactionDescription;
     private String vendor;
     private double price;
 
-    public String getPaymentDate() {
-        return paymentDate;
+    public String getTransactionDate() {
+        return transactionDate;
     }
 
-    public void setPaymentDate(String paymentDate) {
-        this.paymentDate = paymentDate;
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
     }
 
-    public String getPaymentTime() {
-        return paymentTime;
+    public String getTransactionTime() {
+        return transactionTime;
     }
 
-    public void setPaymentTime(String paymentTime) {
-        this.paymentTime = paymentTime;
+    public void setTransactionTime(String transactionTime) {
+        this.transactionTime = transactionTime;
     }
 
-    public String getPaymentDescription() {
-        return paymentDescription;
+    public String getTransactionDescription() {
+        return transactionDescription;
     }
 
-    public void setPaymentDescription(String paymentDescription) {
-        this.paymentDescription = paymentDescription;
+    public void setTransactionDescription(String transactionDescription) {
+        this.transactionDescription = transactionDescription;
     }
 
     public String getVendor() {
@@ -50,18 +50,18 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "paymentDate='" + paymentDate + '\'' +
-                ", paymentTime='" + paymentTime + '\'' +
-                ", paymentDescription='" + paymentDescription + '\'' +
+                "paymentDate='" + transactionDate + '\'' +
+                ", paymentTime='" + transactionTime + '\'' +
+                ", paymentDescription='" + transactionDescription + '\'' +
                 ", vendor='" + vendor + '\'' +
                 ", price=" + price +
                 '}';
     }
 
-    public Transaction(String paymentDate, String paymentTime, String paymentDescription, String vendor, double price) {
-        this.paymentDate = paymentDate;
-        this.paymentTime = paymentTime;
-        this.paymentDescription = paymentDescription;
+    public Transaction(String transactionDate, String transactionTime, String transactionDescription, String vendor, double price) {
+        this.transactionDate = transactionDate;
+        this.transactionTime = transactionTime;
+        this.transactionDescription = transactionDescription;
         this.vendor = vendor;
         this.price = price;
 

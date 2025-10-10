@@ -1,7 +1,9 @@
 package com.pluralsight;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -104,6 +106,28 @@ public class FinancialTracker {
      */
     private static void addDeposit(Scanner scanner) {
         // TODO
+        System.out.printf("Enter the date of the transaction(follow this format %s: ",DATE_PATTERN);
+        String transactionDate = scanner.nextLine();
+        System.out.printf("Enter the time of the transaction(follow this format %s: ",TIME_PATTERN);
+        String transactionTime = scanner.nextLine();
+        System.out.print(("Enter the description of the transaction: "));
+        String transactionDescription = scanner.nextLine();
+        System.out.print("Enter the name of the vendor: ");
+        String vendor = scanner.nextLine();
+        System.out.println("Enter the amount of the transaction: ");
+        double price = scanner.nextFloat();
+        scanner.nextLine();
+        transactions.add(new Transaction(transactionDate,transactionTime,transactionDescription,vendor,price));
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
+            bw.newLine();
+            bw.write( transactionDate + "|" + transactionTime + "|" + transactionDescription +"|" +  vendor +"|" + price);
+            bw.close();
+        }
+        catch ( Exception e){
+            System.out.println("Something went wrong");
+        }
+        System.out.println("You added: " + transactions.get(transactions.size()-1));
     }
 
     /**
@@ -113,6 +137,28 @@ public class FinancialTracker {
      */
     private static void addPayment(Scanner scanner) {
         // TODO
+        System.out.printf("Enter the date of the transaction(follow this format %s: ",DATE_PATTERN);
+        String transactionDate = scanner.nextLine();
+        System.out.printf("Enter the time of the transaction(follow this format %s: ",TIME_PATTERN);
+        String transactionTime = scanner.nextLine();
+        System.out.print(("Enter the description of the transaction: "));
+        String transactionDescription = scanner.nextLine();
+        System.out.print("Enter the name of the vendor: ");
+        String vendor = scanner.nextLine();
+        System.out.println("Enter the amount of the transaction: ");
+        double price = scanner.nextFloat();
+        scanner.nextLine();
+        transactions.add(new Transaction(transactionDate,transactionTime,transactionDescription,vendor,price));
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
+            bw.newLine();
+            bw.write( transactionDate + "|" + transactionTime + "|" + transactionDescription +"|" +  vendor +"|" + "-" + price);
+            bw.close();
+        }
+        catch ( Exception e){
+            System.out.println("Something went wrong");
+        }
+        System.out.println("You added: " + transactions.get(transactions.size()-1));
     }
 
     /* ------------------------------------------------------------------
