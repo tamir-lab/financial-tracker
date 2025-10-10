@@ -76,9 +76,8 @@ public class FinancialTracker {
         //       parse the five fields, build a Transaction object,
         //       and add it to the transactions list.
         String line;
-
         try {
-            BufferedReader br = new BufferedReader(new FileReader("inventory.csv"));
+            BufferedReader br = new BufferedReader(new FileReader(FILE_NAME));
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\\|");
                 String paymentDate = parts[0];
@@ -87,8 +86,7 @@ public class FinancialTracker {
                 String vendor = parts[3];
                 double price = Double.parseDouble(parts[4]);
                 transactions.add(new Transaction(paymentDate, paymentTime, paymentDescription, vendor, price));
-                System.out.println(transactions);
-            }
+            } br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,7 +132,7 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "A" -> displayLedger();
+                case "A" -> displayLedger(transactions);
                 case "D" -> displayDeposits();
                 case "P" -> displayPayments();
                 case "R" -> reportsMenu(scanner);
@@ -147,7 +145,11 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
-    private static void displayLedger() { /* TODO – print all transactions in column format */ }
+    private static void displayLedger(ArrayList<Transaction> transactions) { /* TODO – print all transactions in column format */
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
+    }
 
     private static void displayDeposits() { /* TODO – only amount > 0               */ }
 
