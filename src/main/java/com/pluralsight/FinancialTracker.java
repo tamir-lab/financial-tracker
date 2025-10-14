@@ -255,7 +255,7 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1" -> {/* TODO – month-to-date report */ monthToDateReport();}
-                case "2" -> {/* TODO – previous month report */ }
+                case "2" -> {/* TODO – previous month report */ previousMonthReport();}
                 case "3" -> {/* TODO – year-to-date report   */ }
                 case "4" -> {/* TODO – previous year report  */ }
                 case "5" -> {/* TODO – prompt for vendor then report */ }
@@ -264,6 +264,16 @@ public class FinancialTracker {
                 default -> System.out.println("Invalid option");
             }
         }
+    }
+
+    private static void previousMonthReport() {
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionDate().getMonthValue() == (LocalDate.now().getMonthValue()-1) &&
+                    transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
+                System.out.println(transaction);
+            }
+        }
+    }
     }
 
     private static void monthToDateReport() {
