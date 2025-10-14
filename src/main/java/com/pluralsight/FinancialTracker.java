@@ -324,6 +324,26 @@ public class FinancialTracker {
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
+        System.out.print("Enter transaction date (year-month-day, 2025-09-24): ");
+        String date = scanner.nextLine();
+        LocalDate parsedDate = LocalDate.parse(date);
+        System.out.print("Enter transaction time (hour:minutes:seconds, 08:56:32): ");
+        String time = scanner.nextLine();
+        LocalTime parsedTime = LocalTime.parse(time);
+        System.out.print("Enter the transaction description: ");
+        String description = scanner.nextLine();
+        System.out.println("Enter the vendor name: ");
+        String vendor  = scanner.nextLine();
+        int price = scanner.nextInt();
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionDate() == parsedDate &&
+                    transaction.getTransactionTime() == parsedTime &&
+                    description.equalsIgnoreCase(transaction.getTransactionDescription()) &&
+                    vendor.equalsIgnoreCase(transaction.getVendor()) &&
+                    price == transaction.getPrice()) {
+                System.out.println(transaction);
+            }
+        }
     }
 
     /* ------------------------------------------------------------------
