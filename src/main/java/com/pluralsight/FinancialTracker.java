@@ -257,11 +257,19 @@ public class FinancialTracker {
                 case "1" -> {/* TODO – month-to-date report */ monthToDateReport();}
                 case "2" -> {/* TODO – previous month report */ previousMonthReport();}
                 case "3" -> {/* TODO – year-to-date report   */ yearToDateReport();}
-                case "4" -> {/* TODO – previous year report  */ }
+                case "4" -> {/* TODO – previous year report  */ previousYearReport();}
                 case "5" -> {/* TODO – prompt for vendor then report */ }
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private static void previousYearReport() {
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
+                System.out.println(transaction);
             }
         }
     }
