@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -79,15 +80,15 @@ public class FinancialTracker {
         //       and add it to the transactions list.
         String line;
         try {
-            BufferedReader br = new BufferedReader(new FileReader(FILE_NAME));
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\\|");
-                String paymentDate = parts[0];
-                String paymentTime = parts[1];
+                LocalDate transactionDate = LocalDate.parse(parts[0],DATE_FMT);
+                LocalTime transactionTime = LocalTime.parse(parts[1],TIME_FMT);
                 String paymentDescription = parts[2];
                 String vendor = parts[3];
                 double price = Double.parseDouble(parts[4]);
-                transactions.add(new Transaction(paymentDate, paymentTime, paymentDescription, vendor, price));
+                transactions.add(new Transaction(transactionDate, transactionTime, paymentDescription, vendor, price));
             } br.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,28 +107,39 @@ public class FinancialTracker {
      */
     private static void addDeposit(Scanner scanner) {
         // TODO
-        System.out.printf("Enter the date of the transaction(follow this format %s: ",DATE_PATTERN);
-        String transactionDate = scanner.nextLine();
-        System.out.printf("Enter the time of the transaction(follow this format %s: ",TIME_PATTERN);
-        String transactionTime = scanner.nextLine();
-        System.out.print(("Enter the description of the transaction: "));
-        String transactionDescription = scanner.nextLine();
-        System.out.print("Enter the name of the vendor: ");
-        String vendor = scanner.nextLine();
-        System.out.println("Enter the amount of the transaction: ");
-        double price = scanner.nextFloat();
-        scanner.nextLine();
-        transactions.add(new Transaction(transactionDate,transactionTime,transactionDescription,vendor,price));
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
-            bw.newLine();
-            bw.write( transactionDate + "|" + transactionTime + "|" + transactionDescription +"|" +  vendor +"|" + price);
-            bw.close();
+        try{
+            System.out.printf("Enter the date and time of the transaction (follow this format %s): ",DATETIME_PATTERN);
+            String transactionDateTime = scanner.nextLine();
+            LocalDateTime transactionDateTimeParsed = LocalDateTime.parse(transactionDateTime,DateTimeFormatter.ofPattern(DATETIME_PATTERN));
+            LocalDate transactionDateParsed = LocalDate.parse(transactionDateTimeParsed.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
+            LocalTime transactionTimeParsed = LocalTime.parse(transactionDateTimeParsed.toLocalTime().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+            System.out.print(("Enter the description of the transaction: "));
+            String transactionDescription = scanner.nextLine();
+            System.out.print("Enter the name of the vendor: ");
+            String vendor = scanner.nextLine();
+            System.out.println("Enter the amount of the transaction: ");
+            double price = scanner.nextFloat();
+            scanner.nextLine();
+            if (price > 0 ) {
+                transactions.add(new Transaction(transactionDateParsed,transactionTimeParsed,transactionDescription,vendor,price));
+                try {
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
+                    bw.newLine();
+                    bw.write( transactionDateParsed + "|" + transactionTimeParsed + "|" + transactionDescription +"|" +  vendor +"|" + price);
+                    bw.close();
+                }
+                catch ( Exception e){
+                    System.out.println("Something went wrong");
+                }
+                System.out.println("You added: " + transactions.get(transactions.size()-1));
+            }
+            else {
+                System.out.println("Transaction amount should be a positive number.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch ( Exception e){
-            System.out.println("Something went wrong");
-        }
-        System.out.println("You added: " + transactions.get(transactions.size()-1));
+
     }
 
     /**
@@ -137,28 +149,38 @@ public class FinancialTracker {
      */
     private static void addPayment(Scanner scanner) {
         // TODO
-        System.out.printf("Enter the date of the transaction(follow this format %s: ",DATE_PATTERN);
-        String transactionDate = scanner.nextLine();
-        System.out.printf("Enter the time of the transaction(follow this format %s: ",TIME_PATTERN);
-        String transactionTime = scanner.nextLine();
-        System.out.print(("Enter the description of the transaction: "));
-        String transactionDescription = scanner.nextLine();
-        System.out.print("Enter the name of the vendor: ");
-        String vendor = scanner.nextLine();
-        System.out.println("Enter the amount of the transaction: ");
-        double price = scanner.nextFloat();
-        scanner.nextLine();
-        transactions.add(new Transaction(transactionDate,transactionTime,transactionDescription,vendor,price));
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
-            bw.newLine();
-            bw.write( transactionDate + "|" + transactionTime + "|" + transactionDescription +"|" +  vendor +"|" + "-" + price);
-            bw.close();
+            System.out.printf("Enter the date and time of the transaction (follow this format %s): ",DATETIME_PATTERN);
+            String transactionDateTime = scanner.nextLine();
+            LocalDateTime transactionDateTimeParsed = LocalDateTime.parse(transactionDateTime,DateTimeFormatter.ofPattern(DATETIME_PATTERN));
+            LocalDate transactionDateParsed = LocalDate.parse(transactionDateTimeParsed.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
+            LocalTime transactionTimeParsed = LocalTime.parse(transactionDateTimeParsed.toLocalTime().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+            System.out.print(("Enter the description of the transaction: "));
+            String transactionDescription = scanner.nextLine();
+            System.out.print("Enter the name of the vendor: ");
+            String vendor = scanner.nextLine();
+            System.out.println("Enter the amount of the transaction: ");
+            double price = scanner.nextFloat();
+            scanner.nextLine();
+            if (price <0){
+                transactions.add(new Transaction(transactionDateParsed,transactionTimeParsed,transactionDescription,vendor,price));
+                try {
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
+                    bw.newLine();
+                    bw.write( transactionDateParsed + "|" + transactionTimeParsed + "|" + transactionDescription +"|" +  vendor +"|" + "-" + price);
+                    bw.close();
+                }
+                catch ( Exception e){
+                    System.out.println("Something went wrong");
+                }
+                System.out.println("You added: " + transactions.get(transactions.size()-1));
+            }
+            else {
+                System.out.println("Transaction amount should be a positive number. It will be converted to a negative number automatically.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch ( Exception e){
-            System.out.println("Something went wrong");
-        }
-        System.out.println("You added: " + transactions.get(transactions.size()-1));
     }
 
     /* ------------------------------------------------------------------
@@ -197,9 +219,9 @@ public class FinancialTracker {
         }
     }
 
-    private static void displayDeposits() { /* TODO – only amount > 0               */ }
+    private static void displayDeposits() { /* TODO – only amount > 0               */}
 
-    private static void displayPayments() { /* TODO – only amount < 0               */ }
+    private static void displayPayments() { /* TODO – only amount < 0               */}
 
     /* ------------------------------------------------------------------
        Reports menu
@@ -235,9 +257,8 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Reporting helpers
        ------------------------------------------------------------------ */
-    private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-        // TODO – iterate transactions, print those within the range
-    }
+    //private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
+        // TODO – iterate transactions, print those within the range}
 
     private static void filterTransactionsByVendor(String vendor) {
         // TODO – iterate transactions, print those with matching vendor
@@ -253,11 +274,11 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     private static LocalDate parseDate(String s) {
         /* TODO – return LocalDate or null */
-        return null;
+        return LocalDate.parse(s);
     }
 
     private static Double parseDouble(String s) {
         /* TODO – return Double   or null */
-        return null;
+        return (double) Integer.parseInt(s);
     }
 }
