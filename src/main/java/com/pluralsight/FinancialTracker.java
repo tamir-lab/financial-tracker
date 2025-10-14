@@ -256,12 +256,20 @@ public class FinancialTracker {
             switch (input) {
                 case "1" -> {/* TODO – month-to-date report */ monthToDateReport();}
                 case "2" -> {/* TODO – previous month report */ previousMonthReport();}
-                case "3" -> {/* TODO – year-to-date report   */ }
+                case "3" -> {/* TODO – year-to-date report   */ yearToDateReport();}
                 case "4" -> {/* TODO – previous year report  */ }
                 case "5" -> {/* TODO – prompt for vendor then report */ }
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private static void yearToDateReport() {
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
+                System.out.println(transaction);
             }
         }
     }
@@ -274,15 +282,16 @@ public class FinancialTracker {
             }
         }
     }
-    }
-
     private static void monthToDateReport() {
         for (Transaction transaction : transactions) {
             if (transaction.getTransactionDate().getMonth() == LocalDate.now().getMonth() &&
                     transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
                 System.out.println(transaction);
             }
+        }
     }
+
+
 
     /* ------------------------------------------------------------------
        Reporting helpers
