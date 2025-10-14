@@ -258,10 +258,20 @@ public class FinancialTracker {
                 case "2" -> {/* TODO – previous month report */ previousMonthReport();}
                 case "3" -> {/* TODO – year-to-date report   */ yearToDateReport();}
                 case "4" -> {/* TODO – previous year report  */ previousYearReport();}
-                case "5" -> {/* TODO – prompt for vendor then report */ }
+                case "5" -> {/* TODO – prompt for vendor then report */ searchByVendor(scanner);}
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private static void searchByVendor(Scanner scanner) {
+        System.out.print("Enter the vendor name: ");
+        String vendor = scanner.nextLine();
+        for (Transaction transaction : transactions) {
+            if (vendor.equalsIgnoreCase(transaction.getVendor())){
+                System.out.println(transaction);
             }
         }
     }
