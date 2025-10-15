@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -119,6 +121,9 @@ public class FinancialTracker {
             String vendor = scanner.nextLine();
             System.out.println("Enter the amount of the transaction: ");
             double price = scanner.nextFloat();
+
+            BigDecimal updatedPrice = new BigDecimal(price).setScale(2, RoundingMode.HALF_UP);
+            price = updatedPrice.doubleValue();
             scanner.nextLine();
             if (price > 0 ) {
                 transactions.add(new Transaction(transactionDateParsed,transactionTimeParsed,transactionDescription,vendor,price));
@@ -254,11 +259,11 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> {/* TODO – month-to-date report */ monthToDateReport();}
-                case "2" -> {/* TODO – previous month report */ previousMonthReport();}
-                case "3" -> {/* TODO – year-to-date report   */ yearToDateReport();}
-                case "4" -> {/* TODO – previous year report  */ previousYearReport();}
-                case "5" -> {/* TODO – prompt for vendor then report */ searchByVendor(scanner);}
+                case "1" -> monthToDateReport(); /* TODO – month-to-date report */
+                case "2" -> previousMonthReport(); /* TODO – previous month report */
+                case "3" -> yearToDateReport(); /* TODO – year-to-date report   */
+                case "4" -> previousYearReport(); /* TODO – previous year report  */
+                case "5" -> searchByVendor(scanner); /* TODO – prompt for vendor then report */
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
@@ -278,7 +283,7 @@ public class FinancialTracker {
 
     private static void previousYearReport() {
         for (Transaction transaction : transactions) {
-            if (transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
+            if (transaction.getTransactionDate().getYear() == (LocalDate.now().getYear() - 1)){
                 System.out.println(transaction);
             }
         }
@@ -315,47 +320,111 @@ public class FinancialTracker {
        Reporting helpers
        ------------------------------------------------------------------ */
     //private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-        // TODO – iterate transactions, print those within the range}
+    // TODO – iterate transactions, print those within the range}
 
-    private static void filterTransactionsByVendor(String vendor) {
-        // TODO – iterate transactions, print those with matching vendor
-    }
+    //private static void filterTransactionsByVendor(String vendor) {
+        // TODO – iterate transactions, print those with matching vendor}
 
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
-        System.out.print("Enter transaction date (year-month-day, 2025-09-24): ");
-        String date = scanner.nextLine();
-        LocalDate parsedDate = LocalDate.parse(date);
-        System.out.print("Enter transaction time (hour:minutes:seconds, 08:56:32): ");
-        String time = scanner.nextLine();
-        LocalTime parsedTime = LocalTime.parse(time);
+        ArrayList<Transaction> customSearchTransactions = new ArrayList<>(transactions);
+        ArrayList<Transaction> customSearchTransactionsForDeletion = new ArrayList<>(transactions);
+        System.out.print("Enter start date of the transaction (year-month-day, 2025-09-24): ");
+        try{
+            String date = scanner.nextLine();
+            LocalDate parsedDate = LocalDate.parse(date);
+            for (Transaction customeSearchTransaction : customSearchTransactions) {
+                if (parsedDate.isBefore(customeSearchTransaction.getTransactionDate())) {
+                    customSearchTransactionsForDeletion.remove(customeSearchTransaction);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }
+
+        System.out.print("Enter end date of the transaction (year-month-day, 2025-09-24): ");
+        try {
+            String date = scanner.nextLine();
+            LocalDate parsedDate = LocalDate.parse(date);
+            for (Transaction customeSearchTransaction : customSearchTransactions) {
+                if (parsedDate.isAfter(customeSearchTransaction.getTransactionDate())) {
+                    customSearchTransactionsForDeletion.remove(customeSearchTransaction);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }
+
         System.out.print("Enter the transaction description: ");
         String description = scanner.nextLine();
+        for (Transaction customSearchTransaction : customSearchTransactions) {
+            if (!description.equalsIgnoreCase(customSearchTransaction.getTransactionDescription())){
+                customSearchTransactionsForDeletion.remove(customSearchTransaction);
+                System.out.println(customSearchTransaction);
+            }
+        }
+        for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }
         System.out.println("Enter the vendor name: ");
         String vendor  = scanner.nextLine();
-        int price = scanner.nextInt();
-        for (Transaction transaction : transactions) {
-            if (transaction.getTransactionDate() == parsedDate &&
-                    transaction.getTransactionTime() == parsedTime &&
-                    description.equalsIgnoreCase(transaction.getTransactionDescription()) &&
-                    vendor.equalsIgnoreCase(transaction.getVendor()) &&
-                    price == transaction.getPrice()) {
-                System.out.println(transaction);
+        if (!vendor.isEmpty()){
+            for (Transaction customSearchTransaction : customSearchTransactions) {
+                if (!vendor.equalsIgnoreCase(customSearchTransaction.getVendor())){
+                    customSearchTransactionsForDeletion.remove(customSearchTransaction);
+                }
             }
+        }
+        for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }
+        System.out.println("Enter minimum amount:");
+        int priceMin = scanner.nextInt();
+        scanner.nextLine();
+        for (Transaction customSearchTransaction : customSearchTransactions) {
+            if(priceMin > customSearchTransaction.getPrice()){
+                customSearchTransactionsForDeletion.remove(customSearchTransaction);
+            }
+        }
+        for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }
+        System.out.println("Enter maximum amount:");
+        int priceMax = scanner.nextInt();
+        scanner.nextLine();
+        for (Transaction customSearchTransaction : customSearchTransactions) {
+            if(priceMax < customSearchTransaction.getPrice()){
+                customSearchTransactionsForDeletion.remove(customSearchTransaction);
+            }
+        }
+        for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+
+        for (Transaction customSearchTransaction : customSearchTransactions) {
+            System.out.println(customSearchTransaction);
         }
     }
 
     /* ------------------------------------------------------------------
        Utility parsers (you can reuse in many places)
        ------------------------------------------------------------------ */
-    private static LocalDate parseDate(String s) {
-        /* TODO – return LocalDate or null */
-        return LocalDate.parse(s);
-    }
 
-    private static Double parseDouble(String s) {
+    //private static LocalDate parseDate(String s) {
+        /* TODO – return LocalDate or null */
+        //return LocalDate.parse(s);}
+
+    //private static Double parseDouble(String s) {
         /* TODO – return Double   or null */
-        return (double) Integer.parseInt(s);
-    }
+        //return (double) Integer.parseInt(s);
+    //}
+
 }
