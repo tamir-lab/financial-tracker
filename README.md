@@ -1,15 +1,22 @@
-# Project Title
+# Personal Financial Tracker
 
 ## Description of the Project
 
-Briefly describe what this Java console application does. Mention its purpose and who the intended users are. Explain the main functionality and what problems it aims to solve.
+This application is designed for tracking user's deposits, payments and generating reports.
 
 ## User Stories
 
 List the user stories that guided the development of your application. Format these stories as: "As a [type of user], I want [some goal] so that [some reason]."
 
-- As a user, I want to be able to input my data, so that the application can process it accordingly.
-- As a user, I want to receive immediate feedback, so I can understand what to do next.
+- As a Customer, I want to  be able to see Home Screen, so I can choose what I want to do.
+- As a Customer I want to be able to add a deposit, so I can keep track of spending.
+- As a Customer, I want to beable to make a payment, so I can save payment information.
+- As a Customer, I want to be able to open the ledger, so I can see structured records.
+- As a Customer, I want to be able to open all entries, so I can see the entire history of entries.
+- As a Customer, I want to be able to open the payments section, so I can see only the payments.
+- As a Customer, I want to be able to open the deposits section, so I can see only deposits.
+-As a Customer, I want to be able to exit the app, so I can close the app.
+-
 
 ## Setup
 
