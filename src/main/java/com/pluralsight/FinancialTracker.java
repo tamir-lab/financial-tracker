@@ -47,12 +47,14 @@ public class FinancialTracker {
         boolean running = true;
 
         while (running) {
+            System.out.println("===============================");
             System.out.println("Welcome to TransactionApp");
             System.out.println("Choose an option:");
             System.out.println("D) Add Deposit");
             System.out.println("P) Make Payment (Debit)");
             System.out.println("L) Ledger");
             System.out.println("X) Exit");
+            System.out.println("===============================");
 
             String input = scanner.nextLine().trim();
 
@@ -194,6 +196,7 @@ public class FinancialTracker {
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
+            System.out.println("===============================");
             System.out.println("Ledger");
             System.out.println("Choose an option:");
             System.out.println("A) All");
@@ -201,6 +204,7 @@ public class FinancialTracker {
             System.out.println("P) Payments");
             System.out.println("R) Reports");
             System.out.println("H) Home");
+            System.out.println("===============================");
 
             String input = scanner.nextLine().trim();
 
@@ -246,6 +250,7 @@ public class FinancialTracker {
     private static void reportsMenu(Scanner scanner) {
         boolean running = true;
         while (running) {
+            System.out.println("===============================");
             System.out.println("Reports");
             System.out.println("Choose an option:");
             System.out.println("1) Month To Date");
@@ -255,6 +260,7 @@ public class FinancialTracker {
             System.out.println("5) Search by Vendor");
             System.out.println("6) Custom Search");
             System.out.println("0) Back");
+            System.out.println("===============================");
 
             String input = scanner.nextLine().trim();
 
@@ -270,6 +276,15 @@ public class FinancialTracker {
             }
         }
     }
+
+    /* ------------------------------------------------------------------
+       Reporting helpers
+       ------------------------------------------------------------------ */
+    //private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
+    // TODO – iterate transactions, print those within the range}
+
+    //private static void filterTransactionsByVendor(String vendor) {
+    // TODO – iterate transactions, print those with matching vendor}
 
     private static void searchByVendor(Scanner scanner) {
         System.out.print("Enter the vendor name: ");
@@ -316,102 +331,114 @@ public class FinancialTracker {
 
 
 
-    /* ------------------------------------------------------------------
-       Reporting helpers
-       ------------------------------------------------------------------ */
-    //private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-    // TODO – iterate transactions, print those within the range}
-
-    //private static void filterTransactionsByVendor(String vendor) {
-        // TODO – iterate transactions, print those with matching vendor}
-
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
         ArrayList<Transaction> customSearchTransactions = new ArrayList<>(transactions);
-        ArrayList<Transaction> customSearchTransactionsForDeletion = new ArrayList<>(transactions);
+        ArrayList<Transaction> customSearchTransactionsForDeletion = new ArrayList<>();
         System.out.print("Enter start date of the transaction (year-month-day, 2025-09-24): ");
         try{
             String date = scanner.nextLine();
             LocalDate parsedDate = LocalDate.parse(date);
             for (Transaction customeSearchTransaction : customSearchTransactions) {
-                if (parsedDate.isBefore(customeSearchTransaction.getTransactionDate())) {
-                    customSearchTransactionsForDeletion.remove(customeSearchTransaction);
+                if (parsedDate.isAfter(customeSearchTransaction.getTransactionDate())) {
+                    customSearchTransactionsForDeletion.add(customeSearchTransaction);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (Transaction transaction : customSearchTransactionsForDeletion) {
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+        /*for (Transaction transaction : customSearchTransactionsForDeletion) {
             System.out.println(transaction);
-        }
+        }*/
 
         System.out.print("Enter end date of the transaction (year-month-day, 2025-09-24): ");
         try {
             String date = scanner.nextLine();
             LocalDate parsedDate = LocalDate.parse(date);
             for (Transaction customeSearchTransaction : customSearchTransactions) {
-                if (parsedDate.isAfter(customeSearchTransaction.getTransactionDate())) {
-                    customSearchTransactionsForDeletion.remove(customeSearchTransaction);
+                if (parsedDate.isBefore(customeSearchTransaction.getTransactionDate())) {
+                    customSearchTransactionsForDeletion.add(customeSearchTransaction);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (Transaction transaction : customSearchTransactionsForDeletion) {
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+        /*for (Transaction transaction : customSearchTransactionsForDeletion) {
             System.out.println(transaction);
-        }
+        }*/
 
         System.out.print("Enter the transaction description: ");
         String description = scanner.nextLine();
-        for (Transaction customSearchTransaction : customSearchTransactions) {
-            if (!description.equalsIgnoreCase(customSearchTransaction.getTransactionDescription())){
-                customSearchTransactionsForDeletion.remove(customSearchTransaction);
-                System.out.println(customSearchTransaction);
+        if (!description.isEmpty()) {
+            for (Transaction customSearchTransaction : customSearchTransactions) {
+                if (!description.equalsIgnoreCase(customSearchTransaction.getTransactionDescription())){
+                    customSearchTransactionsForDeletion.add(customSearchTransaction);
+                    System.out.println(customSearchTransaction);
+                }
             }
         }
-        for (Transaction transaction : customSearchTransactionsForDeletion) {
+
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+        /*for (Transaction transaction : customSearchTransactionsForDeletion) {
             System.out.println(transaction);
-        }
+        }*/
         System.out.println("Enter the vendor name: ");
         String vendor  = scanner.nextLine();
         if (!vendor.isEmpty()){
             for (Transaction customSearchTransaction : customSearchTransactions) {
                 if (!vendor.equalsIgnoreCase(customSearchTransaction.getVendor())){
-                    customSearchTransactionsForDeletion.remove(customSearchTransaction);
+                    customSearchTransactionsForDeletion.add(customSearchTransaction);
                 }
             }
         }
-        for (Transaction transaction : customSearchTransactionsForDeletion) {
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+        /*for (Transaction transaction : customSearchTransactionsForDeletion) {
             System.out.println(transaction);
-        }
+        }*/
+
         System.out.println("Enter minimum amount:");
-        int priceMin = scanner.nextInt();
-        scanner.nextLine();
-        for (Transaction customSearchTransaction : customSearchTransactions) {
-            if(priceMin > customSearchTransaction.getPrice()){
-                customSearchTransactionsForDeletion.remove(customSearchTransaction);
+        try {
+            int priceMin = Integer.parseInt(scanner.nextLine());
+            for (Transaction customSearchTransaction : customSearchTransactions) {
+                if(priceMin > customSearchTransaction.getPrice()){
+                    customSearchTransactionsForDeletion.add(customSearchTransaction);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        for (Transaction transaction : customSearchTransactionsForDeletion) {
+
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+        /*for (Transaction transaction : customSearchTransactionsForDeletion) {
             System.out.println(transaction);
-        }
+        }*/
+
         System.out.println("Enter maximum amount:");
-        int priceMax = scanner.nextInt();
-        scanner.nextLine();
-        for (Transaction customSearchTransaction : customSearchTransactions) {
-            if(priceMax < customSearchTransaction.getPrice()){
-                customSearchTransactionsForDeletion.remove(customSearchTransaction);
+        try {
+            int priceMax = Integer.parseInt(scanner.nextLine());
+            for (Transaction customSearchTransaction : customSearchTransactions) {
+                if(priceMax < customSearchTransaction.getPrice()){
+                    customSearchTransactionsForDeletion.add(customSearchTransaction);
+                }
             }
-        }
-        for (Transaction transaction : customSearchTransactionsForDeletion) {
-            System.out.println(transaction);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
-
+        /*for (Transaction transaction : customSearchTransactionsForDeletion) {
+            System.out.println(transaction);
+        }*/
+        customSearchTransactions.removeAll(customSearchTransactionsForDeletion);
+        System.out.println("===============================");
+        System.out.println("Custom search Results:");
         for (Transaction customSearchTransaction : customSearchTransactions) {
+            //System.out.println("\n");
             System.out.println(customSearchTransaction);
         }
+        System.out.println("===============================");
     }
 
     /* ------------------------------------------------------------------
