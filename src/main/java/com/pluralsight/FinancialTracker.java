@@ -159,8 +159,8 @@ public class FinancialTracker {
             System.out.printf("Enter the date and time of the transaction (follow this format %s): ",DATETIME_PATTERN);
             String transactionDateTime = scanner.nextLine();
             LocalDateTime transactionDateTimeParsed = LocalDateTime.parse(transactionDateTime,DateTimeFormatter.ofPattern(DATETIME_PATTERN));
-            LocalDate transactionDateParsed = LocalDate.parse(transactionDateTimeParsed.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
-            LocalTime transactionTimeParsed = LocalTime.parse(transactionDateTimeParsed.toLocalTime().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+            LocalDate transactionDateParsed = transactionDateTimeParsed.toLocalDate();
+            LocalTime transactionTimeParsed = transactionDateTimeParsed.toLocalTime();
             System.out.print(("Enter the description of the transaction: "));
             String transactionDescription = scanner.nextLine();
             System.out.print("Enter the name of the vendor: ");
@@ -427,11 +427,13 @@ public class FinancialTracker {
 
     //private static LocalDate parseDate(String s) {
         /* TODO – return LocalDate or null */
-        //return LocalDate.parse(s);}
+        //if (s.isEmpty()) {return null;}
+        //else {return LocalDate.parse(s);}
 
     //private static Double parseDouble(String s) {
         /* TODO – return Double   or null */
-        //return (double) Integer.parseInt(s);
+        //if (s.isEmpty()) {return null;}
+        //else {return (double) Integer.parseInt(s);}
     //}
 
 }
