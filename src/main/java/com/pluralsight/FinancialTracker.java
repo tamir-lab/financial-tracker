@@ -216,7 +216,7 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
-    private static void displayLedger(ArrayList<Transaction> transactions) { /* TODO – print all transactions in column format */
+    private static void displayLedger(ArrayList<Transaction> transactions) {
         System.out.printf("%-12s %-8s %-30s %-25s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
         for (Transaction transaction : transactions) {
             System.out.printf("%-12s %-8s %-30s %-25s %10.2f%n",
@@ -317,9 +317,11 @@ public class FinancialTracker {
     }
     //SOMETHING WRONG
     private static void monthToDateReport() {
+        LocalDate today = LocalDate.now();
+        LocalDate startOfMonth = today.withDayOfMonth(1);
         for (Transaction transaction : transactions) {
-            if (transaction.getTransactionDate().getMonth() == LocalDate.now().getMonth() &&
-                    transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
+            if ((transaction.getTransactionDate().isEqual(startOfMonth) || transaction.getTransactionDate().isAfter(startOfMonth)) &&
+                    (transaction.getTransactionDate().isEqual(today) || transaction.getTransactionDate().isBefore(today))) {
                 System.out.println(transaction);
             }
         }
