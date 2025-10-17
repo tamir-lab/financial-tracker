@@ -8,8 +8,17 @@ public class Transaction {
     private LocalTime transactionTime;
     private String transactionDescription;
     private String vendor;
-    private double price;
+    private double amount;
 
+    public Transaction(LocalDate transactionDate, LocalTime transactionTime, String transactionDescription, String vendor, double amount) {
+        this.transactionDate = transactionDate;
+        this.transactionTime = transactionTime;
+        this.transactionDescription = transactionDescription;
+        this.vendor = vendor;
+        this.amount = amount;
+
+
+    }
     public LocalDate getTransactionDate() {
         return transactionDate;
     }
@@ -42,12 +51,12 @@ public class Transaction {
         this.vendor = vendor;
     }
 
-    public double getPrice() {
-        return price;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     @Override
@@ -57,17 +66,7 @@ public class Transaction {
                 ", paymentTime='" + transactionTime + '\'' +
                 ", paymentDescription='" + transactionDescription + '\'' +
                 ", vendor='" + vendor + '\'' +
-                ", price=" + price +
+                ", price=" + amount +
                 '}';
-    }
-
-    public Transaction(LocalDate transactionDate, LocalTime transactionTime, String transactionDescription, String vendor, double price) {
-        this.transactionDate = transactionDate;
-        this.transactionTime = transactionTime;
-        this.transactionDescription = transactionDescription;
-        this.vendor = vendor;
-        this.price = price;
-
-
     }
 }

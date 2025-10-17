@@ -1,9 +1,6 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -13,14 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/*
- * Capstone skeleton – personal finance tracker.
- * ------------------------------------------------
- * File format  (pipe-delimited)
- *     yyyy-MM-dd|HH:mm:ss|description|vendor|amount
- * A deposit has a positive amount; a payment is stored
- * as a negative amount.
- */
 public class FinancialTracker {
 
     /* ------------------------------------------------------------------
@@ -74,17 +63,28 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
 
     /**
-     * Load transactions from FILE_NAME.
-     * • If the file doesn’t exist, create an empty one so that future writes succeed.
-     * • Each line looks like: date|time|description|vendor|amount
+     *
+     * @param fileName
      */
     public static void loadTransactions(String fileName) {
-        // TODO: create file if it does not exist, then read each line,
-        //       parse the five fields, build a Transaction object,
-        //       and add it to the transactions list.
-        String line;
+
+        // creates file if it does not exist
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                System.out.printf("File not found. Created new file %s", fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Issue while creating a new file.");
+            }
+        }
+        // reads each line,
+        // parses the five fields(Transaction attributes),
+        // builds a Transaction object and adds it to the transaction list
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
+            String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\\|");
                 LocalDate transactionDate = LocalDate.parse(parts[0],DATE_FMT);
@@ -103,36 +103,35 @@ public class FinancialTracker {
        Add new transactions
        ------------------------------------------------------------------ */
 
-    /**
-     * Prompt for ONE date+time string in the format
-     * "yyyy-MM-dd HH:mm:ss", plus description, vendor, amount.
-     * Validate that the amount entered is positive.
-     * Store the amount as-is (positive) and append to the file.
-     */
     private static void addDeposit(Scanner scanner) {
-        // TODO
+        // asks for each attribute one by one, but the date and time
+        // all inputs being parsed from String, but the amount
         try{
+            //Prompt for ONE date+time string in the format "yyyy-MM-dd HH:mm:ss", plus description, vendor, amount.
             System.out.printf("Enter the date and time of the transaction (follow this format %s): ",DATETIME_PATTERN);
             String transactionDateTime = scanner.nextLine();
-            LocalDateTime transactionDateTimeParsed = LocalDateTime.parse(transactionDateTime,DateTimeFormatter.ofPattern(DATETIME_PATTERN));
-            LocalDate transactionDateParsed = LocalDate.parse(transactionDateTimeParsed.toLocalDate().format(DateTimeFormatter.ofPattern(DATE_PATTERN)));
-            LocalTime transactionTimeParsed = LocalTime.parse(transactionDateTimeParsed.toLocalTime().format(DateTimeFormatter.ofPattern(TIME_PATTERN)));
+            LocalDateTime transactionDateTimeParsed = LocalDateTime.parse(transactionDateTime,DATETIME_FMT);
+            LocalDate transactionDateParsed = transactionDateTimeParsed.toLocalDate();
+            LocalTime transactionTimeParsed = transactionDateTimeParsed.toLocalTime();
             System.out.print(("Enter the description of the transaction: "));
             String transactionDescription = scanner.nextLine();
             System.out.print("Enter the name of the vendor: ");
             String vendor = scanner.nextLine();
             System.out.println("Enter the amount of the transaction: ");
-            double price = scanner.nextFloat();
 
-            BigDecimal updatedPrice = new BigDecimal(price).setScale(2, RoundingMode.HALF_UP);
-            price = updatedPrice.doubleValue();
+            double amount = scanner.nextDouble();
+
+            BigDecimal updatedPrice = new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
+            amount = updatedPrice.doubleValue();
             scanner.nextLine();
-            if (price > 0 ) {
-                transactions.add(new Transaction(transactionDateParsed,transactionTimeParsed,transactionDescription,vendor,price));
+            //Validates that the amount entered is positive
+            //Stores the amount as-is (positive) and appends to the file
+            if (amount > 0 ) {
+                transactions.add(new Transaction(transactionDateParsed,transactionTimeParsed,transactionDescription,vendor,amount));
                 try {
                     BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true));
                     bw.newLine();
-                    bw.write( transactionDateParsed + "|" + transactionTimeParsed + "|" + transactionDescription +"|" +  vendor +"|" + price);
+                    bw.write( transactionDateParsed + "|" + transactionTimeParsed + "|" + transactionDescription +"|" +  vendor +"|" + amount);
                     bw.close();
                 }
                 catch ( Exception e){
@@ -230,7 +229,7 @@ public class FinancialTracker {
 
     private static void displayDeposits() { /* TODO – only amount > 0               */
         for (Transaction transaction : transactions) {
-            if (transaction.getPrice() > 0) {
+            if (transaction.getAmount() > 0) {
                 System.out.println(transaction);
             }
         }
@@ -238,7 +237,7 @@ public class FinancialTracker {
 
     private static void displayPayments() { /* TODO – only amount < 0               */
         for (Transaction transaction : transactions) {
-            if (transaction.getPrice() < 0) {
+            if (transaction.getAmount() < 0) {
                 System.out.println(transaction);
             }
         }
@@ -314,12 +313,13 @@ public class FinancialTracker {
 
     private static void previousMonthReport() {
         for (Transaction transaction : transactions) {
-            if (transaction.getTransactionDate().getMonthValue() == (LocalDate.now().getMonthValue()-1) &&
+            if (transaction.getTransactionDate().getMonthValue() == (LocalDate.now().minusMonths(1).getMonthValue()) &&
                     transaction.getTransactionDate().getYear() == LocalDate.now().getYear()){
                 System.out.println(transaction);
             }
         }
     }
+    //SOMETHING WRONG
     private static void monthToDateReport() {
         for (Transaction transaction : transactions) {
             if (transaction.getTransactionDate().getMonth() == LocalDate.now().getMonth() &&
@@ -330,115 +330,92 @@ public class FinancialTracker {
     }
 
 
-
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
 
-        //buffer is used to store transactions after we trim off excluded one
-        //toRemove is used to store transactions to remove from buffer
-        ArrayList<Transaction> buffer = new ArrayList<>(transactions);
-        ArrayList<Transaction> toRemove = new ArrayList<>();
+        //filteredList is used to store transactions after we trim off excluded one
+        //excludedList is used to store transactions to remove from filteredList
+        ArrayList<Transaction> filteredList = new ArrayList<>(transactions);
+        ArrayList<Transaction> excludedList = new ArrayList<>();
         System.out.print("Enter start date of the transaction (year-month-day, 2025-09-24): ");
         try{
             String date = scanner.nextLine();
             LocalDate parsedDate = LocalDate.parse(date);
-            for (Transaction customeSearchTransaction : buffer) {
-                if (parsedDate.isAfter(customeSearchTransaction.getTransactionDate())) {
-                    toRemove.add(customeSearchTransaction);
+            for (Transaction transaction : filteredList) {
+                if (parsedDate.isAfter(transaction.getTransactionDate())) {
+                    excludedList.add(transaction);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        buffer.removeAll(toRemove);
-        /*for (Transaction transaction : toRemove) {
-            System.out.println(transaction);
-        }*/
+        } catch (Exception e) {}
+        filteredList.removeAll(excludedList);
+
 
         System.out.print("Enter end date of the transaction (year-month-day, 2025-09-24): ");
         try {
             String date = scanner.nextLine();
             LocalDate parsedDate = LocalDate.parse(date);
-            for (Transaction customeSearchTransaction : buffer) {
-                if (parsedDate.isBefore(customeSearchTransaction.getTransactionDate())) {
-                    toRemove.add(customeSearchTransaction);
+            for (Transaction transaction : filteredList) {
+                if (parsedDate.isBefore(transaction.getTransactionDate())) {
+                    excludedList.add(transaction);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        buffer.removeAll(toRemove);
-        /*for (Transaction transaction : toRemove) {
-            System.out.println(transaction);
-        }*/
+        } catch (Exception e) {}
+        filteredList.removeAll(excludedList);
+
 
         System.out.print("Enter the transaction description: ");
         String description = scanner.nextLine();
         if (!description.isEmpty()) {
-            for (Transaction customSearchTransaction : buffer) {
-                if (!description.equalsIgnoreCase(customSearchTransaction.getTransactionDescription())){
-                    toRemove.add(customSearchTransaction);
-                    System.out.println(customSearchTransaction);
+            for (Transaction transaction : filteredList) {
+                if (!description.equalsIgnoreCase(transaction.getTransactionDescription())){
+                    excludedList.add(transaction);
+                    System.out.println(transaction);
                 }
             }
         }
+        filteredList.removeAll(excludedList);
 
-        buffer.removeAll(toRemove);
-        /*for (Transaction transaction : toRemove) {
-            System.out.println(transaction);
-        }*/
+
         System.out.println("Enter the vendor name: ");
         String vendor  = scanner.nextLine();
         if (!vendor.isEmpty()){
-            for (Transaction customSearchTransaction : buffer) {
-                if (!vendor.equalsIgnoreCase(customSearchTransaction.getVendor())){
-                    toRemove.add(customSearchTransaction);
+            for (Transaction transaction : filteredList) {
+                if (!vendor.equalsIgnoreCase(transaction.getVendor())){
+                    excludedList.add(transaction);
                 }
             }
         }
-        buffer.removeAll(toRemove);
-        /*for (Transaction transaction : toRemove) {
-            System.out.println(transaction);
-        }*/
+        filteredList.removeAll(excludedList);
+
 
         System.out.println("Enter minimum amount:");
         try {
             int priceMin = Integer.parseInt(scanner.nextLine());
-            for (Transaction customSearchTransaction : buffer) {
-                if(priceMin > customSearchTransaction.getPrice()){
-                    toRemove.add(customSearchTransaction);
+            for (Transaction transaction : filteredList) {
+                if(priceMin > transaction.getAmount()){
+                    excludedList.add(transaction);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
+        filteredList.removeAll(excludedList);
 
-        buffer.removeAll(toRemove);
-        /*for (Transaction transaction : toRemove) {
-            System.out.println(transaction);
-        }*/
 
         System.out.println("Enter maximum amount:");
         try {
             int priceMax = Integer.parseInt(scanner.nextLine());
-            for (Transaction customSearchTransaction : buffer) {
-                if(priceMax < customSearchTransaction.getPrice()){
-                    toRemove.add(customSearchTransaction);
+            for (Transaction transaction : filteredList) {
+                if(priceMax < transaction.getAmount()){
+                    excludedList.add(transaction);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        buffer.removeAll(toRemove);
-        /*for (Transaction transaction : toRemove) {
-            System.out.println(transaction);
-        }*/
-        buffer.removeAll(toRemove);
+        } catch (Exception e) {}
+        filteredList.removeAll(excludedList);
+
+
         System.out.println("===============================");
-        System.out.println("Custom search Results:");
-        for (Transaction customSearchTransaction : buffer) {
-            //System.out.println("\n");
+        System.out.println("Custom search results:");
+        for (Transaction customSearchTransaction : filteredList) {
             System.out.println(customSearchTransaction);
         }
         System.out.println("===============================");
