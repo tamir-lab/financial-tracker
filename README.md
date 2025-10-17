@@ -2,11 +2,10 @@
 
 ## Description of the Project
 
-This application is designed for tracking user's deposits, payments and generating reports.
+This application helps users to record deposits and payments, view transaction history, and generate basic financial reports. It uses file storage for data persistence and provides an easy-to-use interface for managing personal finances. Users can input transaction details, which are saved locally to ensure data is retained between sessions. The application then processes and displays the data in a structured format, making it easy to review and analyze financial activity over time.
 
 ## User Stories
 
-List the user stories that guided the development of your application. Format these stories as: "As a [type of user], I want [some goal] so that [some reason]."
 
 - As a Customer, I want to  be able to see Home Screen, so I can choose what I want to do.
 - As a Customer I want to be able to add a deposit, so I can keep track of spending.
@@ -63,17 +62,17 @@ Follow these steps to get your application running within IntelliJ IDEA:
 
 - Checked "Add Deposit", "Make Payment" with the wrong input, "All" to print out all transactions; and "Custom Search".
 
-[Demo Video](financial-tracker-demo-video.mp4)
+[Demo GIF](demo%20gif.gif)
 
 ## Future Work
 
 Outline potential future enhancements or functionalities you might consider adding:
 
-- Removing transactions
-- Updating transactions
-- Category tagging
-- Summary Report
-- Sort options
+- Removing transactions.
+- Updating transactions. Change a value of particular attribute.
+- Category tagging. Add a category field to each transaction.
+- Summary Report. Reflect balance and total. 
+- Sort options. Sort by newest to oldest, oldest to newest, highest to lowest amount, lowest to highest amount etc.
 
 
 ## Resources
@@ -86,11 +85,9 @@ List resources such as tutorials, articles, or documentation that helped you dur
 ## Team Members
 
 - **Name 1** - Tamir, a code writer.
-- **Name 2** - Roger, cheerleader.
+- **Name 2** - Roger, a cheerleader.
 
 ## Thanks
-
-Express gratitude towards those who provided help, guidance, or resources:
 
 - Chokran to Potato Sensei for continuous support and guidance.
 - A special thanks to Jason.
