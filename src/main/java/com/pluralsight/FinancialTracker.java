@@ -217,8 +217,14 @@ public class FinancialTracker {
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
     private static void displayLedger(ArrayList<Transaction> transactions) { /* TODO – print all transactions in column format */
+        System.out.printf("%-12s %-8s %-30s %-25s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
         for (Transaction transaction : transactions) {
-            System.out.println(transaction);
+            System.out.printf("%-12s %-8s %-30s %-25s %10.2f%n",
+                    transaction.getTransactionDate(),
+                    transaction.getTransactionTime(),
+                    transaction.getTransactionDescription(),
+                    transaction.getVendor(),
+                    transaction.getAmount());
         }
     }
 
@@ -321,8 +327,8 @@ public class FinancialTracker {
 
 
     private static void customSearch(Scanner scanner) {
-        // TODO – prompt for any combination of date range, description,
-        //        vendor, and exact amount, then display matches
+        // prompts for any combination of date range, description,
+        // vendor, and exact amount, then display matches
 
         //filteredList is used to store transactions after we trim off excluded one
         //excludedList is used to store transactions to remove from filteredList
@@ -405,9 +411,14 @@ public class FinancialTracker {
 
         System.out.println("===============================");
         System.out.println("Custom search results:");
-        for (Transaction customSearchTransaction : filteredList) {
-            System.out.println(customSearchTransaction);
+        System.out.printf("%-12s %-8s %-30s %-25s %10s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        for (Transaction transaction : filteredList) {
+            System.out.printf("%-12s %-8s %-30s %-25s %10.2f%n",
+                    transaction.getTransactionDate(),
+                    transaction.getTransactionTime(),
+                    transaction.getTransactionDescription(),
+                    transaction.getVendor(),
+                    transaction.getAmount());
         }
-        System.out.println("===============================");
     }
 }
