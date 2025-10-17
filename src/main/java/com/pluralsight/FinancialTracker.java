@@ -63,8 +63,8 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
 
     /**
-     *
-     * @param fileName
+     * Reads transactions from a CSV file
+     * @param fileName name of the CSV file (e.g. "transactions.csv")
      */
     public static void loadTransactions(String fileName) {
 
@@ -148,13 +148,8 @@ public class FinancialTracker {
 
     }
 
-    /**
-     * Same prompts as addDeposit.
-     * Amount must be entered as a positive number,
-     * then converted to a negative amount before storing.
-     */
+    // Same as addDeposit. Converts positive number to negative before storing
     private static void addPayment(Scanner scanner) {
-        // TODO
         try {
             System.out.printf("Enter the date and time of the transaction (follow this format %s): ",DATETIME_PATTERN);
             String transactionDateTime = scanner.nextLine();
@@ -166,7 +161,7 @@ public class FinancialTracker {
             System.out.print("Enter the name of the vendor: ");
             String vendor = scanner.nextLine();
             System.out.println("Enter the amount of the transaction: ");
-            double price = scanner.nextFloat();
+            double price = scanner.nextDouble();
             scanner.nextLine();
             if (price <0){
                 transactions.add(new Transaction(transactionDateParsed,transactionTimeParsed,transactionDescription,vendor,price));
@@ -227,7 +222,7 @@ public class FinancialTracker {
         }
     }
 
-    private static void displayDeposits() { /* TODO – only amount > 0               */
+    private static void displayDeposits() {
         for (Transaction transaction : transactions) {
             if (transaction.getAmount() > 0) {
                 System.out.println(transaction);
@@ -235,7 +230,7 @@ public class FinancialTracker {
         }
     }
 
-    private static void displayPayments() { /* TODO – only amount < 0               */
+    private static void displayPayments() {
         for (Transaction transaction : transactions) {
             if (transaction.getAmount() < 0) {
                 System.out.println(transaction);
@@ -264,11 +259,11 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input) {
-                case "1" -> monthToDateReport(); /* TODO – month-to-date report */
-                case "2" -> previousMonthReport(); /* TODO – previous month report */
-                case "3" -> yearToDateReport(); /* TODO – year-to-date report   */
-                case "4" -> previousYearReport(); /* TODO – previous year report  */
-                case "5" -> searchByVendor(scanner); /* TODO – prompt for vendor then report */
+                case "1" -> monthToDateReport();
+                case "2" -> previousMonthReport();
+                case "3" -> yearToDateReport();
+                case "4" -> previousYearReport();
+                case "5" -> searchByVendor(scanner);
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
@@ -279,11 +274,6 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Reporting helpers
        ------------------------------------------------------------------ */
-    //private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-    // TODO – iterate transactions, print those within the range}
-
-    //private static void filterTransactionsByVendor(String vendor) {
-    // TODO – iterate transactions, print those with matching vendor}
 
     private static void searchByVendor(Scanner scanner) {
         System.out.print("Enter the vendor name: ");
@@ -420,20 +410,4 @@ public class FinancialTracker {
         }
         System.out.println("===============================");
     }
-
-    /* ------------------------------------------------------------------
-       Utility parsers (you can reuse in many places)
-       ------------------------------------------------------------------ */
-
-    //private static LocalDate parseDate(String s) {
-        /* TODO – return LocalDate or null */
-        //if (s.isEmpty()) {return null;}
-        //else {return LocalDate.parse(s);}
-
-    //private static Double parseDouble(String s) {
-        /* TODO – return Double   or null */
-        //if (s.isEmpty()) {return null;}
-        //else {return (double) Integer.parseInt(s);}
-    //}
-
 }
